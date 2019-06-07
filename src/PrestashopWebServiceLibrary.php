@@ -131,12 +131,22 @@ class PrestashopWebServiceLibrary
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLINFO_HEADER_OUT => true,
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-            CURLOPT_USERPWD => $this->key.':',
             CURLOPT_HTTPHEADER => array( 'Expect:' ),
             CURLOPT_SSL_VERIFYPEER => config('app.env') === 'local' ? 0 : 1,
             CURLOPT_SSL_VERIFYHOST => config('app.env') === 'local' ? 0 : 2 // value 1 is not accepted https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
         );
+
+        if(config('prestashop-webservice.basic_auth') == 1) {
+        	$defaultParams['CURLOPT_HTTPAUTH'] = CURLAUTH_BASIC;
+        	$defaultParams['CURLOPT_USERPWD'] = $this->key.':';
+        } else  {
+            if( strpos($url, '?') === false ) {
+                $separator = '?';
+            } else {
+                $separator = '&';
+            }
+            $url .= ($separator . 'ws_key=' . $this->key);
+        }
 
         $curl_options = array();
         foreach ($defaultParams as $defkey => $defval) {
