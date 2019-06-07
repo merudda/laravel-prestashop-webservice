@@ -35,5 +35,8 @@
   "scripts": {
     "test": "vendor/bin/phpunit",
     "cs": "vendor/bin/phpcs src/*"
+  },
+  "require": {
+    "prestashop/prestashop-webservice-lib": "dev-master"
   }
 }
